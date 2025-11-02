@@ -4,18 +4,40 @@
   "title": "Linear Search: Find Index",
   "description": "Implement a function `linearSearch(arr, target)` that returns the index of the first occurrence of `target` in `arr`, or -1 if not found.",
   "exportName": "linearSearch",
-  "starterCode": "function linearSearch(arr, target) {\n  // TODO: iterate through arr\n  // return the index when arr[i] === target\n  // if not found, return -1\n}\n\n// export for the runner\nexport default { linearSearch };\n",
+  "starterCode": "function linearSearch(arr, target) {\n  // TODO: iterate through arr\n  // return the index when arr[i] === target\n  // if not found, return -1\n}",
   "tests": [
-    { "code": "linearSearch([1,2,3], 2)", "expected": 1 },
-    { "code": "linearSearch([1,2,3], 4)", "expected": -1 },
-    { "code": "linearSearch([], 5)", "expected": -1 },
-    { "code": "linearSearch([5,5,5], 5)", "expected": 0 },
-    { "code": "linearSearch([10,20,30,40], 10)", "expected": 0 }
+    {
+      "code": "linearSearch([1,2,3], 2)",
+      "expected": 1
+    },
+    {
+      "code": "linearSearch([1,2,3], 4)",
+      "expected": -1
+    },
+    {
+      "code": "linearSearch([], 5)",
+      "expected": -1
+    },
+    {
+      "code": "linearSearch([5,5,5], 5)",
+      "expected": 0
+    },
+    {
+      "code": "linearSearch([10,20,30,40], 10)",
+      "expected": 0
+    }
   ],
-  "hints": [
-    "Loop from 0 to arr.length - 1",
-    "Compare each element to target",
-    "Return -1 after the loop if nothing matched"
-  ]
+  "hints": {
+    "easy": [
+      "Pseudo-code: for i in [0..n): if arr[i] === target return i; return -1;",
+      "Edge cases: empty array should return -1."
+    ],
+    "medium": [
+      "Loop from 0 to arr.length - 1",
+      "Compare each element to target"
+    ],
+    "hard": [
+      "Return -1 after the loop if nothing matched"
+    ]
+  }
 }
-

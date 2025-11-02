@@ -1,22 +1,50 @@
 // Type definitions for levels and algorithms
 
-export interface TestCase {
+// Simple test case used in MVP (string-based eval)
+export interface SimpleTest {
+  code: string;
+  expected: any;
+}
+
+// Hints grouped by difficulty for MVP
+export interface HintSet {
+  easy: string[];
+  medium: string[];
+  hard: string[];
+}
+
+// Simple level schema matching current JSON structure
+export interface SimpleLevel {
   id: string;
-  input: Record<string, any>;
+  order: number;
+  title: string;
+  description: string;
+  exportName: string;
+  starterCode: string;
+  tests: SimpleTest[];
+  hints: HintSet;
+}
+
+// Future: Structured test case (safer, no eval)
+export interface StructuredTestCase {
+  id: string;
+  args: any[];
   expected: any;
   description: string;
   isHidden?: boolean;
 }
 
-export interface Level {
+// Future: Structured level (when migrating away from string eval)
+export interface StructuredLevel {
   id: string;
   order: number;
   title: string;
   description: string;
   explanation: string;
+  exportName: string;
   codeTemplate: string;
   solution: string;
-  testCases: TestCase[];
+  testCases: StructuredTestCase[];
   hints: string[];
   points: number;
 }
@@ -26,15 +54,13 @@ export interface Algorithm {
   name: string;
   description: string;
   difficulty: "easy" | "medium" | "hard";
-  levels: Level[];
+  levels: SimpleLevel[];
 }
 
 export interface TestResult {
-  testId: string;
-  passed: boolean;
-  input: Record<string, any>;
-  expected: any;
+  pass: boolean;
   actual: any;
+  expected: any;
   error?: string;
 }
 

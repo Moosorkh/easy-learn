@@ -8,12 +8,13 @@
 
 ## 🚦 MVP Scope (P0) — Implemented Skeleton
 
-- Levels + gating: JSON level files, unlock by passing tests.
+- Levels + gating: JSON level files, unlock by passing tests (3 linear search levels shipped).
 - Editor: simple in-app editor (textarea) to avoid new deps initially.
 - Runner: Web Worker executes user code against level tests with timeout safeguard.
 - Feedback: per-test pass/fail with actual vs expected.
 - Persistence: localStorage for code and pass state.
-- Track: Linear Search Level 1 included; more levels to follow.
+- Hint tiers: easy / medium / hard collapsible sections.
+- Track: Linear Search levels 1–3 included; more algorithms to follow.
 
 Paths introduced:
 - `src/levels/linear-search/level1.json`

@@ -1,0 +1,29 @@
+{
+  "id": "linear-2",
+  "order": 2,
+  "title": "Linear Search: All Indices",
+  "description": "Implement `linearSearchAll(arr, target)` that returns an array of ALL indices where `target` occurs in `arr`. Return an empty array if not found.",
+  "exportName": "linearSearchAll",
+  "starterCode": "function linearSearchAll(arr, target) {\n  // TODO: collect all indices i where arr[i] === target\n  // return an array of indices (possibly empty)\n}",
+  "tests": [
+    { "code": "linearSearchAll([1,2,3], 2)", "expected": [1] },
+    { "code": "linearSearchAll([5,5,5], 5)", "expected": [0,1,2] },
+    { "code": "linearSearchAll([1,2,3], 4)", "expected": [] },
+    { "code": "linearSearchAll([], 1)", "expected": [] },
+    { "code": "linearSearchAll([10,20,10,30,10], 10)", "expected": [0,2,4] }
+  ],
+  "hints": {
+    "easy": [
+      "Pseudo-code: let res=[]; for i in [0..n): if arr[i]===target push i; return res;",
+      "Remember: the result may be empty."
+    ],
+    "medium": [
+      "Create a result array and push matching indices",
+      "Loop through the whole array; don't stop at the first match"
+    ],
+    "hard": [
+      "Initialize an empty array and return it at the end"
+    ]
+  }
+}
+
