@@ -6,23 +6,42 @@
   "exportName": "findIndex",
   "starterCode": "function findIndex(arr, predicate) {\n  // TODO: iterate through arr\n  // call predicate(arr[i]) and if true, return i\n  // if none match, return -1\n}",
   "tests": [
-    { "code": "findIndex([1,2,3], (x) => x === 2)", "expected": 1 },
-    { "code": "findIndex([1,2,3], (x) => x > 3)", "expected": -1 },
-    { "code": "findIndex([], (x) => true)", "expected": -1 },
-    { "code": "findIndex([{v:1},{v:2},{v:3}], (o) => o.v === 3)", "expected": 2 }
+    {
+      "code": "findIndex([1,2,3], (x) => x === 2)",
+      "expected": 1
+    },
+    {
+      "code": "findIndex([1,2,3], (x) => x > 3)",
+      "expected": -1
+    },
+    {
+      "code": "findIndex([], (x) => true)",
+      "expected": -1
+    },
+    {
+      "code": "findIndex([{v:1},{v:2},{v:3}], (o) => o.v === 3)",
+      "expected": 2
+    }
   ],
   "hints": {
     "easy": [
-      "Pseudo-code: for i in [0..n): if predicate(arr[i]) return i; return -1;",
-      "Edge: empty array should return -1."
+      "Line 2: for (let i = 0; i < arr.length; i++) {",
+      "Line 3:   if (predicate(arr[i])) {",
+      "Line 4:     return i;",
+      "Line 5:   }",
+      "Line 6: }",
+      "Line 7: return -1;"
     ],
     "medium": [
-      "Call predicate with each element and check if it returns true",
-      "Return the index of the first match"
+      "Loop through each element with index i",
+      "Call predicate(arr[i]) to test the element",
+      "If predicate returns true, return the index",
+      "If no element passes the test, return -1"
     ],
     "hard": [
-      "Return -1 if no element satisfies the predicate"
+      "Instead of comparing with a value, you call a function",
+      "The predicate function tests each element",
+      "Think of it like level 1, but more flexible"
     ]
   }
 }
-

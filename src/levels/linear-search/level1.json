@@ -29,15 +29,23 @@
   ],
   "hints": {
     "easy": [
-      "Pseudo-code: for i in [0..n): if arr[i] === target return i; return -1;",
-      "Edge cases: empty array should return -1."
+      "Line 2: for (let i = 0; i < arr.length; i++) {",
+      "Line 3:   if (arr[i] === target) {",
+      "Line 4:     return i;",
+      "Line 5:   }",
+      "Line 6: }",
+      "Line 7: return -1;"
     ],
     "medium": [
-      "Loop from 0 to arr.length - 1",
-      "Compare each element to target"
+      "Loop through each index from 0 to array length",
+      "At each index, compare arr[i] with target",
+      "If they match, return the current index",
+      "If loop completes without finding, return -1"
     ],
     "hard": [
-      "Return -1 after the loop if nothing matched"
+      "Think about how to check every element sequentially",
+      "What should you return when you find the target?",
+      "What should you return if you never find it?"
     ]
   }
 }

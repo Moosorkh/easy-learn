@@ -11,6 +11,23 @@ const LEVELS: SimpleLevel[] = [
   level3 as SimpleLevel,
 ];
 
+const palette = {
+  page: "#f5f5f5",
+  panel: "#ffffff",
+  border: "#d1d5db",
+  gradient: "linear-gradient(135deg, #1e40af 0%, #0c4a6e 100%)",
+  primary: "#1e40af",
+  secondary: "#0c4a6e",
+  textPrimary: "#111827",
+  textSecondary: "#4b5563",
+  textMuted: "#6b7280",
+  success: "#059669",
+  warning: "#d97706",
+  danger: "#dc2626",
+  neutral: "#e5e7eb",
+  accent: "#0891b2",
+};
+
 function useLocalStorage(key: string, initial: string) {
   const [value, setValue] = useState<string>(() => {
     const v = localStorage.getItem(key);
@@ -123,16 +140,250 @@ function App() {
     const done = LEVELS.filter(
       (l) => localStorage.getItem(`passed:${l.id}`) === "true"
     ).length;
-    return { done, total };
+    return { done, total, isComplete: done === total };
   }, [levelIndex, progressVersion]);
 
-  return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <aside style={{ width: 260, borderRight: "1px solid #eee", padding: 16 }}>
-        <h2>Easy Learn</h2>
-        <div style={{ fontSize: 12, color: "#666" }}>
-          Progress: {progress.done}/{progress.total}
+  const hintSections = [
+    {
+      id: "concept",
+      title: "Hints — Conceptual (try first)",
+      icon: "🧠",
+      colors: { text: palette.danger, bg: "#fff5f5", border: "#fecdd3" },
+      items: level.hints.hard,
+    },
+    {
+      id: "pseudo",
+      title: "Hints — Pseudo-code",
+      icon: "📝",
+      colors: { text: "#b7791f", bg: "#fff8eb", border: "#fcd9a6" },
+      items: level.hints.medium,
+    },
+    {
+      id: "solution",
+      title: "Solution — Line by Line (last resort!)",
+      icon: "⚠️",
+      colors: { text: palette.warning, bg: "#fffbea", border: "#fde68a" },
+      items: level.hints.easy,
+    },
+  ];
+
+  const indexedResults =
+    results?.map((res, index) => ({ ...res, index })) ?? null;
+
+  // Show completion screen if all levels done
+  if (progress.isComplete) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: palette.gradient,
+        }}
+      >
+        <div
+          style={{
+            background: palette.panel,
+            borderRadius: 16,
+            padding: 48,
+            maxWidth: 600,
+            textAlign: "center",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+          }}
+        >
+          <div style={{ fontSize: 64, marginBottom: 16 }}>🎉</div>
+          <h1
+            style={{
+              fontSize: 32,
+              marginBottom: 8,
+              color: palette.textPrimary,
+            }}
+          >
+            Algorithm Complete!
+          </h1>
+          <p
+            style={{
+              fontSize: 18,
+              color: palette.textSecondary,
+              marginBottom: 32,
+            }}
+          >
+            You've mastered <strong>Linear Search</strong>
+          </p>
+
+          <div
+            style={{
+              background: palette.neutral,
+              borderRadius: 12,
+              padding: 24,
+              marginBottom: 32,
+            }}
+          >
+            <h3
+              style={{
+                fontSize: 20,
+                marginBottom: 16,
+                color: palette.textPrimary,
+              }}
+            >
+              Your Stats
+            </h3>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+                textAlign: "center",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: 32,
+                    fontWeight: "bold",
+                    color: palette.primary,
+                  }}
+                >
+                  {progress.total}
+                </div>
+                <div style={{ fontSize: 14, color: palette.textSecondary }}>
+                  Levels Completed
+                </div>
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontSize: 32,
+                    fontWeight: "bold",
+                    color: palette.secondary,
+                  }}
+                >
+                  100%
+                </div>
+                <div style={{ fontSize: 14, color: palette.textSecondary }}>
+                  Success Rate
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+            <button
+              onClick={() => {
+                // Reset progress
+                LEVELS.forEach((l) => {
+                  localStorage.removeItem(`passed:${l.id}`);
+                  localStorage.removeItem(`code:${l.id}`);
+                });
+                setProgressVersion((v) => v + 1);
+                setLevelIndex(0);
+              }}
+              style={{
+                padding: "12px 24px",
+                fontSize: 16,
+                borderRadius: 8,
+                background: palette.neutral,
+                border: `1px solid ${palette.border}`,
+                cursor: "pointer",
+              }}
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => {
+                alert("More algorithms coming soon!");
+              }}
+              style={{
+                padding: "12px 24px",
+                fontSize: 16,
+                borderRadius: 8,
+                background: palette.gradient,
+                color: "white",
+                border: "none",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Next Algorithm →
+            </button>
+          </div>
         </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{ display: "flex", minHeight: "100vh", background: palette.page }}
+    >
+      <aside
+        style={{
+          width: 280,
+          background: palette.panel,
+          borderRight: `1px solid ${palette.border}`,
+          padding: 24,
+          boxShadow: "2px 0 12px rgba(15, 23, 42, 0.05)",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: 24,
+            marginBottom: 8,
+            background: palette.gradient,
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: 700,
+          }}
+        >
+          Easy Learn
+        </h2>
+        <div
+          style={{
+            fontSize: 14,
+            color: palette.textSecondary,
+            marginBottom: 20,
+          }}
+        >
+          <strong>Linear Search</strong>
+        </div>
+
+        {/* Progress Bar */}
+        <div style={{ marginBottom: 20 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 12,
+              color: palette.textMuted,
+              marginBottom: 6,
+              fontWeight: 500,
+            }}
+          >
+            <span>Progress</span>
+            <span>
+              {progress.done}/{progress.total}
+            </span>
+          </div>
+          <div
+            style={{
+              height: 8,
+              background: palette.neutral,
+              borderRadius: 4,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                background: palette.gradient,
+                width: `${(progress.done / progress.total) * 100}%`,
+                transition: "width 0.3s ease",
+              }}
+            />
+          </div>
+        </div>
+
         <ul style={{ listStyle: "none", padding: 0, marginTop: 12 }}>
           {LEVELS.map((lvl, i) => {
             const ok = localStorage.getItem(`passed:${lvl.id}`) === "true";
@@ -140,23 +391,37 @@ function App() {
               i === 0 ||
               localStorage.getItem(`passed:${LEVELS[i - 1].id}`) === "true";
             return (
-              <li key={lvl.id} style={{ marginBottom: 8 }}>
+              <li key={lvl.id} style={{ marginBottom: 10 }}>
                 <button
                   onClick={() => unlocked && setLevelIndex(i)}
                   style={{
                     width: "100%",
                     textAlign: "left",
-                    padding: "8px 10px",
+                    padding: "12px 14px",
                     background:
                       i === levelIndex
-                        ? "#eef6ff"
+                        ? palette.gradient
                         : unlocked
-                        ? "#fafafa"
-                        : "#f3f3f3",
-                    border: "1px solid #ddd",
-                    borderRadius: 6,
+                        ? palette.panel
+                        : palette.neutral,
+                    color:
+                      i === levelIndex
+                        ? "white"
+                        : unlocked
+                        ? palette.textPrimary
+                        : palette.textMuted,
+                    border:
+                      i === levelIndex
+                        ? "1px solid transparent"
+                        : `1px solid ${palette.border}`,
+                    borderRadius: 8,
                     cursor: unlocked ? "pointer" : "not-allowed",
-                    opacity: unlocked ? 1 : 0.6,
+                    fontWeight: i === levelIndex ? 600 : 400,
+                    fontSize: 14,
+                    boxShadow:
+                      i === levelIndex
+                        ? "0 6px 16px rgba(91, 108, 255, 0.25)"
+                        : "none",
                   }}
                 >
                   {ok ? "✅" : unlocked ? "⬜" : "🔒"} {lvl.order}. {lvl.title}
@@ -170,49 +435,148 @@ function App() {
       <main
         style={{
           flex: 1,
-          padding: 16,
+          padding: 32,
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: 16,
+          gap: 24,
         }}
       >
         <section
-          style={{ border: "1px solid #eee", borderRadius: 8, padding: 16 }}
+          style={{
+            background: palette.panel,
+            border: `1px solid ${palette.border}`,
+            borderRadius: 12,
+            padding: 24,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          }}
         >
-          <h3>{level.title}</h3>
-          <p style={{ whiteSpace: "pre-wrap" }}>{level.description}</p>
-          <div style={{ marginTop: 8 }}>
-            <details>
-              <summary>Hints — Hard (subtle)</summary>
-              <ol>
+          <h3 style={{ fontSize: 20, marginBottom: 8, color: palette.textPrimary }}>
+            {level.title}
+          </h3>
+          <p
+            style={{
+              whiteSpace: "pre-wrap",
+              color: palette.textSecondary,
+              fontSize: 14,
+              lineHeight: 1.6,
+            }}
+          >
+            {level.description}
+          </p>
+
+          <div style={{ marginTop: 20 }}>
+            <details
+              style={{
+                marginBottom: 12,
+                border: `1px solid ${palette.border}`,
+                borderRadius: 8,
+                padding: 12,
+              }}
+            >
+              <summary
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  color: palette.accent,
+                  fontSize: 14,
+                }}
+              >
+                💡 Hints — Conceptual (try first)
+              </summary>
+              <ol
+                style={{
+                  marginTop: 12,
+                  paddingLeft: 20,
+                  color: palette.textSecondary,
+                  fontSize: 14,
+                }}
+              >
                 {level.hints.hard.map((h, idx) => (
-                  <li key={idx}>{h}</li>
+                  <li key={idx} style={{ marginTop: 6 }}>
+                    {h}
+                  </li>
                 ))}
               </ol>
             </details>
-            <details>
-              <summary>Hints — Medium</summary>
-              <ol>
+            <details
+              style={{
+                marginBottom: 12,
+                border: `1px solid ${palette.border}`,
+                borderRadius: 8,
+                padding: 12,
+              }}
+            >
+              <summary
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  color: palette.warning,
+                  fontSize: 14,
+                }}
+              >
+                📝 Hints — Pseudo-code
+              </summary>
+              <ol
+                style={{
+                  marginTop: 12,
+                  paddingLeft: 20,
+                  color: palette.textSecondary,
+                  fontSize: 14,
+                }}
+              >
                 {level.hints.medium.map((h, idx) => (
-                  <li key={idx}>{h}</li>
+                  <li key={idx} style={{ marginTop: 6 }}>
+                    {h}
+                  </li>
                 ))}
               </ol>
             </details>
-            <details>
-              <summary>Hints — Easy (spoilers)</summary>
-              <ol>
-                {level.hints.easy.map((h, idx) => (
-                  <li key={idx}>{h}</li>
-                ))}
-              </ol>
+            <details
+              style={{
+                border: `2px solid ${palette.warning}`,
+                borderRadius: 8,
+                padding: 12,
+                background: palette.panel,
+              }}
+            >
+              <summary
+                style={{
+                  cursor: "pointer",
+                  fontWeight: 600,
+                  color: palette.warning,
+                  fontSize: 14,
+                }}
+              >
+                ⚠️ Solution — Line by Line (last resort!)
+              </summary>
+              <pre
+                style={{
+                  marginTop: 12,
+                  padding: 16,
+                  background: "#1e1e1e",
+                  color: "#d4d4d4",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  lineHeight: 1.6,
+                  overflowX: "auto",
+                  fontFamily: "ui-monospace, monospace",
+                }}
+              >
+                {level.hints.easy.join("\n")}
+              </pre>
             </details>
           </div>
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 20 }}>
             <label
               htmlFor="editor"
-              style={{ display: "block", fontWeight: 600, marginBottom: 6 }}
+              style={{
+                display: "block",
+                fontWeight: 600,
+                marginBottom: 8,
+                fontSize: 14,
+              }}
             >
-              Editor
+              Code Editor
             </label>
             <textarea
               id="editor"
@@ -221,35 +585,83 @@ function App() {
               onChange={(e) => setCode(e.target.value)}
               style={{
                 width: "100%",
-                height: 320,
+                height: 340,
                 fontFamily:
                   "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
                 fontSize: 14,
-                padding: 12,
-                borderRadius: 6,
-                border: "1px solid #ccc",
+                padding: 16,
+                borderRadius: 8,
+                border: `2px solid ${palette.border}`,
+                background: "#1e1e1e",
+                color: "#d4d4d4",
+                lineHeight: 1.6,
+                resize: "vertical",
               }}
             />
-            <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-              <button onClick={runTests} disabled={running}>
-                {running ? "Running…" : "Run Tests"}
+            <div
+              style={{
+                marginTop: 12,
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <button
+                onClick={runTests}
+                disabled={running}
+                style={{
+                  padding: "10px 20px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  borderRadius: 8,
+                  border: "none",
+                  background: palette.gradient,
+                  color: "white",
+                  boxShadow: "0 2px 8px rgba(30, 64, 175, 0.3)",
+                }}
+              >
+                {running ? "⏳ Running…" : "▶️ Run Tests"}
               </button>
               <button
                 onClick={() => setCode(level.starterCode)}
                 disabled={running}
-                style={{ background: "#f5f5f5" }}
+                style={{
+                  padding: "10px 20px",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  borderRadius: 8,
+                  border: `1px solid ${palette.border}`,
+                  background: palette.panel,
+                  color: palette.textSecondary,
+                }}
               >
-                Reset to Starter
+                🔄 Reset
               </button>
               {passed && (
-                <span style={{ alignSelf: "center", color: "green" }}>
-                  All tests passed!
+                <span
+                  style={{
+                    alignSelf: "center",
+                    color: palette.success,
+                    fontWeight: 600,
+                    fontSize: 14,
+                  }}
+                >
+                  ✅ All tests passed!
                 </span>
               )}
               {passed && levelIndex < LEVELS.length - 1 && (
                 <button
                   onClick={() => setLevelIndex(levelIndex + 1)}
-                  style={{ marginLeft: "auto" }}
+                  style={{
+                    marginLeft: "auto",
+                    padding: "10px 20px",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    borderRadius: 8,
+                    border: "none",
+                    background: palette.success,
+                    color: "white",
+                  }}
                 >
                   Next Level →
                 </button>
@@ -259,26 +671,118 @@ function App() {
         </section>
 
         <section
-          style={{ border: "1px solid #eee", borderRadius: 8, padding: 16 }}
+          style={{
+            background: palette.panel,
+            border: `1px solid ${palette.border}`,
+            borderRadius: 12,
+            padding: 24,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          }}
         >
-          <h3>Results</h3>
-          {!results && <p>Run tests to see results.</p>}
-          {results && (
-            <ul>
-              {results.map((r, i) => (
-                <li key={i}>
-                  {r.pass ? "✅" : "❌"} Test {i + 1} — expected{" "}
-                  {formatVal(r.expected)}, got {formatVal(r.actual)}
-                  {r.error ? ` (error: ${r.error})` : ""}
-                </li>
-              ))}
-            </ul>
+          <h3 style={{ fontSize: 20, marginBottom: 16, color: palette.textPrimary }}>
+            Test Results
+          </h3>
+          {!results && (
+            <p style={{ color: palette.textMuted, fontSize: 14 }}>
+              Run tests to see results.
+            </p>
           )}
-          <h4 style={{ marginTop: 16 }}>Test Cases</h4>
-          <ul>
+          {results && (
+            <>
+              {results.some((r) => !r.pass) && (
+                <div
+                  style={{
+                    background: "#fef2f2",
+                    border: `1px solid #fecaca`,
+                    borderRadius: 6,
+                    padding: 12,
+                    marginBottom: 16,
+                  }}
+                >
+                  <strong style={{ color: palette.danger }}>
+                    ❌ Some tests failed
+                  </strong>
+                  <ul style={{ marginTop: 8, marginBottom: 0 }}>
+                    {results
+                      .filter((r) => !r.pass)
+                      .map((r, i) => (
+                        <li key={i} style={{ color: palette.danger, marginTop: 4 }}>
+                          Test {results.indexOf(r) + 1}: expected{" "}
+                          {formatVal(r.expected)}, got {formatVal(r.actual)}
+                          {r.error && (
+                            <div style={{ fontSize: 12, marginTop: 4 }}>
+                              Error: {r.error}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+
+              {results.every((r) => r.pass) && (
+                <div
+                  style={{
+                    background: "#d1fae5",
+                    border: `1px solid #6ee7b7`,
+                    borderRadius: 6,
+                    padding: 12,
+                    marginBottom: 16,
+                  }}
+                >
+                  <strong style={{ color: palette.success }}>
+                    ✅ All tests passed!
+                  </strong>
+                </div>
+              )}
+
+              <details style={{ marginTop: 12 }}>
+                <summary
+                  style={{ cursor: "pointer", color: palette.textSecondary, fontSize: 14 }}
+                >
+                  Show all test results ({results.filter((r) => r.pass).length}/
+                  {results.length} passed)
+                </summary>
+                <ul style={{ marginTop: 8 }}>
+                  {results.map((r, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        color: r.pass ? palette.success : palette.danger,
+                        marginTop: 4,
+                      }}
+                    >
+                      {r.pass ? "✅" : "❌"} Test {i + 1}: expected{" "}
+                      {formatVal(r.expected)}, got {formatVal(r.actual)}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </>
+          )}
+          <h4 style={{ marginTop: 16, color: palette.textPrimary }}>Test Cases</h4>
+          <ul style={{ fontSize: 14 }}>
             {level.tests.map((t, i) => (
-              <li key={i}>
-                <code>{t.code}</code> → <code>{formatVal(t.expected)}</code>
+              <li key={i} style={{ marginTop: 4, color: palette.textSecondary }}>
+                <code
+                  style={{
+                    background: palette.neutral,
+                    padding: "2px 6px",
+                    borderRadius: 3,
+                  }}
+                >
+                  {t.code}
+                </code>
+                {" → "}
+                <code
+                  style={{
+                    background: palette.neutral,
+                    padding: "2px 6px",
+                    borderRadius: 3,
+                  }}
+                >
+                  {formatVal(t.expected)}
+                </code>
               </li>
             ))}
           </ul>
@@ -290,7 +794,7 @@ function App() {
 
 function formatVal(v: any) {
   try {
-    return typeof v === "string" ? JSON.stringify(v) : JSON.stringify(v);
+    return JSON.stringify(v);
   } catch {
     return String(v);
   }
